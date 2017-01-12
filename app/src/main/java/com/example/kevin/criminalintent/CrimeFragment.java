@@ -157,7 +157,6 @@ public class CrimeFragment extends android.support.v4.app.Fragment {
             public void onClick(View v) {
                 Intent i = new Intent(Intent.ACTION_DIAL);
                 startActivity(i);
-//                jfkljfl
             }
         });
 
