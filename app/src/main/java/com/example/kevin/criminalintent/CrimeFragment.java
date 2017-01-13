@@ -7,10 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.ShareCompat;
-import android.support.v4.view.LayoutInflaterCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
@@ -21,18 +18,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.UUID;
 
-import static java.text.DateFormat.DATE_FIELD;
-import static java.text.DateFormat.DAY_OF_YEAR_FIELD;
-import static java.text.DateFormat.FULL;
-import static java.text.DateFormat.LONG;
-import static java.text.DateFormat.SHORT;
 
 /**
  * Created by kevin on 2016/12/24.
