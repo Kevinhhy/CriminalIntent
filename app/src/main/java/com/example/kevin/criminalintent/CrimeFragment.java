@@ -47,6 +47,7 @@ public class CrimeFragment extends android.support.v4.app.Fragment {
 
     private static final String ARG_CRIME_ID = "crime_id";
     private static final String DIALOG_DATE = "DialogDate";
+    private static final String DIALOG_PHOTO ="DialogPhoto";
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_CONTACT = 1;
     private static final int REQUEST_PHOTO = 2;
@@ -60,8 +61,6 @@ public class CrimeFragment extends android.support.v4.app.Fragment {
     private Button mSuspectButton;
     private ImageButton mPhotoButton;
     private ImageView mPhotoView;
-
-
 
     public static CrimeFragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
@@ -181,6 +180,14 @@ public class CrimeFragment extends android.support.v4.app.Fragment {
         });
         mPhotoView = (ImageView) v.findViewById(R.id.crime_photo);
         updatePhotoView();
+        mPhotoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getFragmentManager();
+                PhotoFragment dialog = PhotoFragment.newInstance(mPhotoFile);
+                dialog.show(fragmentManager, DIALOG_PHOTO);
+            }
+        });
 
         return v;
     }
