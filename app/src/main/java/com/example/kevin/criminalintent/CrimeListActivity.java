@@ -39,8 +39,5 @@ public class CrimeListActivity extends SingleFragmentActivity
 
     @Override
     public void onCrimeDelete(Activity activity) {
-//        if (findViewById(R.id.detail_fragment_container) == null) {
-
-//        }
     }
 }
