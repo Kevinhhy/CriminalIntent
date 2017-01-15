@@ -1,6 +1,7 @@
 package com.example.kevin.criminalintent;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -17,6 +18,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -59,8 +63,15 @@ public class CrimeFragment extends android.support.v4.app.Fragment {
     private CheckBox mSolvedCheckBox;
     private Button mReportButton;
     private Button mSuspectButton;
+    private Button mDialButton;
     private ImageButton mPhotoButton;
     private ImageView mPhotoView;
+    private Callbacks mCallbacks;
+
+    public interface Callbacks{
+        void onCrimeUpdated(Crime crime);
+        void onCrimeDelete(Activity activity);
+    }
 
     public static CrimeFragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
@@ -70,12 +81,20 @@ public class CrimeFragment extends android.support.v4.app.Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCallbacks = (Callbacks) context;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
         mPhotoFile = CrimeLab.get(getActivity()).getPhotoFile(mCrime);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -86,7 +105,32 @@ public class CrimeFragment extends android.support.v4.app.Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_crime, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_delete_crime:
+                CrimeLab.get(getActivity()).deleteCrime(mCrime);
+                updateCrime();
+                mCallbacks.onCrimeDelete(getActivity());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View v = inflater.inflate(R.layout.fragment_crime, container, false);
 
         mTitleField = (EditText) v.findViewById(R.id.crime_title);
@@ -100,6 +144,7 @@ public class CrimeFragment extends android.support.v4.app.Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 mCrime.setTitle(charSequence.toString());
+                updateCrime();
             }
 
             @Override
@@ -127,6 +172,7 @@ public class CrimeFragment extends android.support.v4.app.Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 mCrime.setSolved(b);
+                updateCrime();
             }
         });
 
@@ -189,6 +235,16 @@ public class CrimeFragment extends android.support.v4.app.Fragment {
             }
         });
 
+        mDialButton = (Button) v.findViewById(R.id.call_button);
+        mDialButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.createChooser(intent, null);
+                startActivity(intent);
+            }
+        });
+
         return v;
     }
 
@@ -201,6 +257,7 @@ public class CrimeFragment extends android.support.v4.app.Fragment {
         if (requestCode == REQUEST_DATE) {
             Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mCrime.setDate(date);
+            updateCrime();
             updateDate();
         } else if (requestCode == REQUEST_CONTACT && data != null) {
             Uri contactUri = data.getData();
@@ -217,15 +274,23 @@ public class CrimeFragment extends android.support.v4.app.Fragment {
 
                 c.moveToFirst();
                 String suspect = c.getString(0);
+                updateCrime();
                 mCrime.setSuspect(suspect);
                 mSuspectButton.setText(suspect);
             }finally {
                 c.close();
             }
         } else if (requestCode == REQUEST_PHOTO) {
+            updateCrime();
             updatePhotoView();
         }
     }
+
+    private void updateCrime() {
+        CrimeLab.get(getActivity()).updateCrime(mCrime);
+        mCallbacks.onCrimeUpdated(mCrime);
+    }
+
 
     private void updateDate() {
         mDateButton.setText(mCrime.getDate().toString());

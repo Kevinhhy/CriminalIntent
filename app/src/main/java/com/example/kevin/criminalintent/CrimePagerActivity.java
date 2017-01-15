@@ -1,5 +1,6 @@
 package com.example.kevin.criminalintent;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,7 +17,7 @@ import java.util.UUID;
  * Created by kevin on 2017/1/2.
  */
 
-public class CrimePagerActivity extends AppCompatActivity{
+public class CrimePagerActivity extends AppCompatActivity implements CrimeFragment.Callbacks{
 
     private static final String EXTRA_CRIME_ID = "com.example.kevin.criminalintent.crime_id";
 
@@ -59,5 +60,14 @@ public class CrimePagerActivity extends AppCompatActivity{
                 break;
             }
         }
+    }
+
+    @Override
+    public void onCrimeUpdated(Crime crime) {
+    }
+
+    @Override
+    public void onCrimeDelete(Activity activity) {
+        activity.finish();
     }
 }

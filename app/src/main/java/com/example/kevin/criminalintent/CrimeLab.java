@@ -120,4 +120,8 @@ public class CrimeLab {
         return new CrimeCusorWrapper(cursor);
     }
 
+    public void deleteCrime(Crime crime) {
+        mDatabase.delete(CrimeDbSchema.CrimeTable.NAME, CrimeDbSchema.CrimeTable.Cols.UUID + "=?", new String[]{crime.getId().toString()});
+    }
+
 }
