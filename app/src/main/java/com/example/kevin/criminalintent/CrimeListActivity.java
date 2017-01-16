@@ -1,7 +1,6 @@
 package com.example.kevin.criminalintent;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
@@ -39,5 +38,9 @@ public class CrimeListActivity extends SingleFragmentActivity
 
     @Override
     public void onCrimeDelete(Activity activity) {
+        getSupportFragmentManager().beginTransaction()
+                .remove(getSupportFragmentManager()
+                .findFragmentById(R.id.detail_fragment_container))
+                .commit();
     }
 }

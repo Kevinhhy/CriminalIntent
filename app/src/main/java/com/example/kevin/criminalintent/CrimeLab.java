@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import database.CrimeDbSchema.CrimeDbSchema;
  */
 
 public class CrimeLab {
+
     private static CrimeLab sCrimeLab;
 
     private Context mContext;
